@@ -232,7 +232,8 @@ void RslidarLaserScan::recvCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
     scan->range_min = range_min_;
     scan->range_max = range_max_;
 
-    scan->time_increment = 0.0;
+    scan->scan_time = 0.1;
+    scan->time_increment =scan->scan_time / SIZE;
     scan->ranges.resize(SIZE, INFINITY);
     scan->intensities.resize(SIZE);
 
