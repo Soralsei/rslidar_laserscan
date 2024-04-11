@@ -46,6 +46,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
 
+#include <dynamic_reconfigure/server.h>
+#include <rslidar_laserscan/RSLaserScanConfig.h>
+
 namespace rslidar_laserscan
 {
 class RslidarLaserScan
@@ -54,18 +57,24 @@ public:
   RslidarLaserScan(ros::NodeHandle& nh, ros::NodeHandle& nh_priv);
 
 private:
+  boost::mutex connect_mutex_;
   void connectCb();
   void recvCallback(const sensor_msgs::PointCloud2ConstPtr& msg);
 
-  uint16_t ring_;
-  uint16_t height_;
+  uint16_t default_ring;
   float range_min_;
   float range_max_;
+
   std::string sub_topic_;
   ros::NodeHandle nh_;
   ros::Subscriber sub_;
   ros::Publisher pub_;
-  boost::mutex connect_mutex_;
+
+  RSLaserScanConfig config;
+  dynamic_reconfigure::Server<RSLaserScanConfig> reconfig_srv;
+  void reconfig(RSLaserScanConfig& config, uint32_t level);
+
+  size_t ring_count;
 };
 }
 

@@ -1,5 +1,4 @@
 cmake_minimum_required (VERSION 2.8.3)
-
 project (rslidar_laserscan)
 
 # Set minimum C++ standard to C++11
@@ -14,19 +13,46 @@ endif()
 find_package (catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
+  nodelet
+  dynamic_reconfigure
 )
 
-catkin_package()
+generate_dynamic_reconfigure_options(
+  cfg/RSLaserScan.cfg
+)
+
+catkin_package(CATKIN_DEPENDS
+  sensor_msgs
+)
 
 include_directories (
   include
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable (${PROJECT_NAME}_node
-  src/node.cpp src/rslidar_laserscan.cpp
+add_library(${PROJECT_NAME}
+  src/rslidar_laserscan.cpp
+  src/nodelet.cpp
+)
+add_dependencies(${PROJECT_NAME}
+  ${PROJECT_NAME}_gencfg
+)
+target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
 )
 
-target_link_libraries (${PROJECT_NAME}_node
+add_executable(${PROJECT_NAME}_node
+  src/node.cpp
+)
+target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
+  ${PROJECT_NAME}
+)
+
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+install(FILES nodelets.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

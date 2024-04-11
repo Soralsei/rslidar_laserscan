@@ -1,0 +1,10 @@
+<library path="librslidar_laserscan">
+    <class name="rslidar_laserscan/LaserScanNodelet"
+           type="rslidar_laserscan::LaserScanNodelet"
+           base_class_type="nodelet::Nodelet">
+      <description>
+        Extract a single ring from a RSLidar PointCloud2 and publish
+        as a LaserScan.
+      </description>
+    </class>
+  </library>
