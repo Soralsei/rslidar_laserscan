@@ -1,10 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <launch>
+    <arg name="laserscan_topic" default="rslidar_laserscan"
+        doc="The topic in which the LiDAR laserscan data is published" />
+    <arg name="pointcloud_topic" default="rslidar_points"
+        doc="The topic in which the LiDAR pointcloud data is published" />
 
-  <node pkg="rslidar_laserscan" name="rslidar_laserscan_node" type="rslidar_laserscan_node" output="screen">
-    <param name="model" value="RS16"/>
-    <param name="sub_topic" value="/rslidar_points" />
-    <!-- the ring start from 1 -->
-    <param name="ring" value="8" />  
-  </node>
-
+    <node name="rslidar_laserscan" pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" output="screen">
+        <remap from="cloud_in" to="$(arg pointcloud_topic)" />
+        <remap from="scan" to="$(arg laserscan_topic)" />
+        <rosparam file="$(find rslidar_laserscan)/cfg/rslidar16_to_laserscan.yaml" command="load" />
+    </node>
 </launch>
