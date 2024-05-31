@@ -1,0 +1,18 @@
+<launch>
+    <arg name="laserscan_topic" default="rslidar_laserscan"
+        doc="The topic in which the LiDAR laserscan data is published" />
+    <arg name="pointcloud_topic" default="rslidar_points"
+        doc="The topic in which the LiDAR pointcloud data is published" />
+    <arg name="nodelet_manager" default="rslidar_nodelet_manager"
+        doc="The topic in which the LiDAR pointcloud data is published" />
+
+    <node pkg="nodelet" type="nodelet" name="pointcloud_to_laserscan"
+        args="load rslidar_laserscan/LaserScanNodelet $(arg nodelet_manager)"
+        output="screen">
+        <remap from="cloud_in" to="$(arg pointcloud_topic)" />
+        <remap from="scan" to="$(arg laserscan_topic)" />
+
+        <param name="model" value="RS16" />
+        <param name="ring" value="8" />
+    </node>
+</launch>

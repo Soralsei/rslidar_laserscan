@@ -47,7 +47,6 @@ namespace rslidar_laserscan
     ros::SubscriberStatusCallback connect_cb = boost::bind(&RslidarLaserScan::connectCb, this);
     std::string model = "RS16";
 
-    nh_priv.param("sub_topic", sub_topic_, std::string("/rslidar_points"));
     nh_priv.param("model", model, std::string("RS16"));
 
     int ring = 1000;
@@ -100,7 +99,7 @@ namespace rslidar_laserscan
       std::cout << "lidar model is bad. please choose right model from: RS16|RS32|RSHELIOS|RSHELIOS_16P|RSBP|RS80|RS128!" << std::endl;
       exit(-1);
     }
-    pub_ = nh.advertise<sensor_msgs::LaserScan>("rslidar_laserscan", 10, connect_cb, connect_cb);
+    pub_ = nh.advertise<sensor_msgs::LaserScan>("scan", 10, connect_cb, connect_cb);
     reconfig_srv.setCallback(boost::bind(&RslidarLaserScan::reconfig, this, _1, _2));
   }
 
@@ -113,7 +112,7 @@ namespace rslidar_laserscan
     }
     else if (!sub_)
     {
-      sub_ = nh_.subscribe(sub_topic_, 10, &RslidarLaserScan::recvCallback, this);
+      sub_ = nh_.subscribe("cloud_in", 10, &RslidarLaserScan::recvCallback, this);
     }
   }
 
